@@ -61,9 +61,9 @@ export default function Dashboard({ user, setUser }) {
     const headers = { Authorization: `Bearer ${token}` };
     try {
       const [sRes, mRes, profRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/dashboard/stats", { headers }),
-        axios.get("http://localhost:5000/api/dashboard/members", { headers }),
-        axios.get("http://localhost:5000/api/dashboard/profiles", { headers }),
+        axios.get("https://halkhata-nine.vercel.app/api/dashboard/stats", { headers }),
+        axios.get("https://halkhata-nine.vercel.app/api/dashboard/members", { headers }),
+        axios.get("https://halkhata-nine.vercel.app/api/dashboard/profiles", { headers }),
       ]);
       setStats(sRes.data);
       setMembers(mRes.data);
@@ -89,7 +89,7 @@ export default function Dashboard({ user, setUser }) {
       if (activeTab === "plan") query.append("isPlanned", "true");
 
       const res = await axios.get(
-        `http://localhost:5000/api/projects?${query.toString()}`,
+        `https://halkhata-nine.vercel.app/api/projects?${query.toString()}`,
         { headers },
       );
       setProjects(res.data.projects);
@@ -167,14 +167,14 @@ export default function Dashboard({ user, setUser }) {
     try {
       if (editingItem) {
         await axios.put(
-          `http://localhost:5000/api/dashboard/${endpoint}/${editingItem._id}`,
+          `https://halkhata-nine.vercel.app/api/dashboard/${endpoint}/${editingItem._id}`,
           { name: newName },
           { headers },
         );
         toast.success(`${type === "members" ? "Member" : "Profile"} updated`);
       } else {
         await axios.post(
-          `http://localhost:5000/api/dashboard/${endpoint}`,
+          `https://halkhata-nine.vercel.app/api/dashboard/${endpoint}`,
           { name: newName },
           { headers },
         );
@@ -195,7 +195,7 @@ export default function Dashboard({ user, setUser }) {
     const endpoint = type === "members" ? "members" : "profiles";
     try {
       await axios.delete(
-        `http://localhost:5000/api/dashboard/${endpoint}/${id}`,
+        `https://halkhata-nine.vercel.app/api/dashboard/${endpoint}/${id}`,
         { headers },
       );
       toast.success("Deleted successfully");
@@ -211,7 +211,7 @@ export default function Dashboard({ user, setUser }) {
     const token = localStorage.getItem("halkhata-token");
     const headers = { Authorization: `Bearer ${token}` };
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${id}`, {
+      await axios.delete(`https://halkhata-nine.vercel.app/api/projects/${id}`, {
         headers,
       });
       toast.success("Project deleted");
@@ -226,7 +226,7 @@ export default function Dashboard({ user, setUser }) {
     const headers = { Authorization: `Bearer ${token}` };
     try {
       await axios.patch(
-        `http://localhost:5000/api/projects/${id}/plan`,
+        `https://halkhata-nine.vercel.app/api/projects/${id}/plan`,
         { isPlanned },
         { headers },
       );

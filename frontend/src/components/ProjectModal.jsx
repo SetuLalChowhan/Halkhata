@@ -72,10 +72,10 @@ export default function ProjectModal({ onClose, refresh, members, profiles, edit
 
     try {
       if (editData) {
-        await axios.put(`http://localhost:5000/api/projects/${editData._id}`, payload, { headers });
+        await axios.put(`https://halkhata-nine.vercel.app/api/projects/${editData._id}`, payload, { headers });
         toast.success('Project updated');
       } else {
-        await axios.post('http://localhost:5000/api/projects', payload, { headers });
+        await axios.post('https://halkhata-nine.vercel.app/api/projects', payload, { headers });
         toast.success('Project added');
       }
       refresh();
