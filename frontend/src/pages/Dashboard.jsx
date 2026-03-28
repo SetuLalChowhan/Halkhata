@@ -274,10 +274,8 @@ export default function Dashboard() {
       {/* Modals */}
       {isModalOpen && (
         <ProjectModal
-          isOpen={isModalOpen}
-          setIsOpen={setIsModalOpen}
-          fetchProjects={() => {}} // Now handled by TanStack Query invalidation
-          editProject={editProject}
+          onClose={() => setIsModalOpen(false)}
+          editData={editProject}
           members={members}
           profiles={profiles}
         />
