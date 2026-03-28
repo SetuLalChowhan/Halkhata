@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
 const { protect, admin } = require('../middleware/authMiddleware');
+const sendWebhook = require('../utils/webhook');
 
+// GET /api/projects
 router.get('/', protect, async (req, res) => {
     try {
         const { member, status, sort, search, isPlanned, urgent, page = 1, limit = 20 } = req.query;
@@ -72,47 +74,60 @@ router.get('/', protect, async (req, res) => {
     }
 });
 
+// POST /api/projects
 router.post('/', protect, async (req, res) => {
     try {
         const project = new Project(req.body);
         await project.save();
+        
+        // Trigger n8n Webhook
+        const fullProject = await Project.findById(project._id).populate('assignedTo', 'name');
+        sendWebhook('project_created', fullProject);
+        
         res.status(201).json(project);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
+// PUT /api/projects/:id
 router.put('/:id', protect, async (req, res) => {
     try {
         const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        
+        // Trigger n8n Webhook
+        const fullProject = await Project.findById(project._id).populate('assignedTo', 'name');
+        sendWebhook('project_updated', fullProject);
+
         res.json(project);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
+// DELETE /api/projects/:id
 router.delete('/:id', protect, async (req, res) => {
     try {
-        await Project.findByIdAndDelete(req.params.id);
+        const project = await Project.findById(req.params.id);
+        if (project) {
+            sendWebhook('project_deleted', project);
+            await Project.findByIdAndDelete(req.params.id);
+        }
         res.json({ message: 'Project removed' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-router.post('/:id/distribute', protect, admin, async (req, res) => {
-    try {
-        const { distribution } = req.body;
-        const project = await Project.findByIdAndUpdate(req.params.id, { valueDistribution: distribution }, { new: true });
-        res.json(project);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
+// PATCH /api/projects/:id/plan
 router.patch('/:id/plan', protect, admin, async (req, res) => {
     try {
         const project = await Project.findByIdAndUpdate(req.params.id, { isPlanned: req.body.isPlanned }, { new: true });
+        
+        // Trigger n8n Webhook
+        const fullProject = await Project.findById(project._id).populate('assignedTo', 'name');
+        sendWebhook('plan_updated', fullProject);
+
         res.json(project);
     } catch (err) {
         res.status(400).json({ message: err.message });
