@@ -182,7 +182,7 @@ export default function Dashboard() {
                     Dashboard
                   </h2>
                   <p className="text-sm text-gray-500 font-medium">
-                    Track and manage your active projects
+                    Track and manage your active projectsss
                   </p>
                 </div>
                 <button
