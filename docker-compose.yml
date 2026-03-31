@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    image: setulalchowhan/halkhata-backend:v1
+    build: ./backend
+    container_name: halkhata-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb+srv://setulalchowhan:setu1234@cluster0.15qqqco.mongodb.net/?appName=Halkhata
+      - JWT_SECRET=supersecretjwtkey_for_halkhata
+      - N8N_WEBHOOK_URL=https://reasonlessly-undelirious-tania.ngrok-free.dev/webhook/halkhata-trigger
+      - AUTOMATION_API_KEY=halkhata_automation_2026_xyz
+    restart: always
+
+  frontend:
+    image: setulalchowhan/halkhata-frontend:v1
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE_URL=http://localhost:5000/api
+    container_name: halkhata-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
