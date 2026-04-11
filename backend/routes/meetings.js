@@ -5,7 +5,7 @@ const { protect } = require('../middleware/authMiddleware');
 const { generateJaaSJWT } = require('../utils/jaasToken');
 
 // GET /api/meetings/token/:roomName
-router.get('/token/:roomName', protect, async (req, res) => {
+router.get('/token/:roomName', async (req, res) => {
     try {
         const { roomName } = req.params;
         const appId = process.env.JAAS_APP_ID;
@@ -51,7 +51,7 @@ router.post('/', protect, async (req, res) => {
 });
 
 // GET /api/meetings/:roomName
-router.get('/:roomName', protect, async (req, res) => {
+router.get('/:roomName', async (req, res) => {
     try {
         const meeting = await Meeting.findOne({ roomName: req.params.roomName })
             .populate('members', 'name')

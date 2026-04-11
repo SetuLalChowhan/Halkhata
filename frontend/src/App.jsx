@@ -24,7 +24,7 @@ function App() {
         />
         <Route
           path="/meeting/:roomName"
-          element={isAuthenticated ? <MeetingPage /> : <Navigate to="/login" />}
+          element={<MeetingPage />}
         />
         <Route
           path="/"
