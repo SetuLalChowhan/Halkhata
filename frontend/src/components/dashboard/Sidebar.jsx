@@ -6,6 +6,7 @@ import {
   UserCircle,
   Users,
   BookOpen,
+  Video
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/slices/authSlice";
@@ -17,6 +18,7 @@ export default function Sidebar({ activeTab, setActiveTab, setIsGuideOpen }) {
   const navItems = [
     { id: "projects", label: "Projects", icon: LayoutDashboard },
     { id: "plan", label: "Monthly Plan", icon: CheckCircle },
+    { id: "meetings", label: "Meetings", icon: Video },
     { id: "profiles", label: "Profiles", icon: UserCircle },
     { id: "members", label: "Team Members", icon: Users },
   ];

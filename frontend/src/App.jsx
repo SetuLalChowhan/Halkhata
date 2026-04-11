@@ -8,6 +8,7 @@ import {
 import { useSelector } from "react-redux";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import MeetingPage from "./pages/MeetingPage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -20,6 +21,10 @@ function App() {
         <Route
           path="/login"
           element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/meeting/:roomName"
+          element={isAuthenticated ? <MeetingPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/"

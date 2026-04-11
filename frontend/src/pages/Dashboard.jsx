@@ -13,6 +13,7 @@ import StatsGrid from "../components/dashboard/StatsGrid";
 import FiltersBar from "../components/dashboard/FiltersBar";
 import ProjectsTable from "../components/dashboard/ProjectsTable";
 import CrudBlock from "../components/dashboard/CrudBlock";
+import MeetingsTab from "../components/dashboard/MeetingsTab";
 
 // API
 import {
@@ -267,6 +268,10 @@ export default function Dashboard() {
               onDelete={handleDeleteCrud}
               isLoading={saveCrudItemMutation.isLoading}
             />
+          )}
+
+          {activeTab === "meetings" && (
+            <MeetingsTab />
           )}
         </div>
       </main>

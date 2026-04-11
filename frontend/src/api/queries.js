@@ -105,3 +105,33 @@ export const useDeleteCrudItem = (type) => {
     },
   });
 };
+// --- Meeting Queries ---
+export const useMeetings = () => {
+  return useQuery({
+    queryKey: ["meetings"],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get("/meetings");
+      return data;
+    },
+  });
+};
+
+export const useCreateMeeting = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (meetingData) => axiosInstance.post("/meetings", meetingData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["meetings"] });
+    },
+  });
+};
+
+export const useDeleteMeeting = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => axiosInstance.delete(`/meetings/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["meetings"] });
+    },
+  });
+};
