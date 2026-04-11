@@ -15,17 +15,26 @@ const MeetingPage = () => {
   const [summary, setSummary] = useState('');
   const [meetingData, setMeetingData] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [jaasData, setJaasData] = useState({ token: '', appId: '' });
+  const [isLoadingToken, setIsLoadingToken] = useState(true);
 
   useEffect(() => {
-    const fetchMeeting = async () => {
+    const fetchMeetingAndToken = async () => {
       try {
-        const { data } = await axiosInstance.get(`/meetings/${roomName}`);
-        setMeetingData(data);
+        const [mRes, tRes] = await Promise.all([
+          axiosInstance.get(`/meetings/${roomName}`),
+          axiosInstance.get(`/meetings/token/${roomName}`)
+        ]);
+        setMeetingData(mRes.data);
+        setJaasData(tRes.data);
       } catch (err) {
-        console.error('Failed to fetch meeting details');
+        console.error('Failed to fetch meeting or token');
+        toast.error('Authentication failed for JaaS');
+      } finally {
+        setIsLoadingToken(false);
       }
     };
-    fetchMeeting();
+    fetchMeetingAndToken();
   }, [roomName]);
 
   const handleSaveSummary = async () => {
@@ -48,13 +57,22 @@ const MeetingPage = () => {
     }
   };
 
+  if (isLoadingToken) {
+    return (
+      <div className="h-screen w-full bg-slate-900 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen w-full bg-slate-900 overflow-hidden flex flex-col">
       {/* Jitsi Meeting Container */}
       <div className="flex-1 w-full bg-black relative">
         <JitsiMeeting
-          domain="meet.jit.si"
-          roomName={roomName}
+          domain="8x8.vc"
+          roomName={`${jaasData.appId}/${roomName}`}
+          jwt={jaasData.token}
           configOverwrite={{
             startWithAudioMuted: true,
             disableModeratorIndicator: false,

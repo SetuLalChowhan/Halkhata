@@ -2,6 +2,26 @@ const express = require('express');
 const router = express.Router();
 const Meeting = require('../models/Meeting');
 const { protect } = require('../middleware/authMiddleware');
+const { generateJaaSJWT } = require('../utils/jaasToken');
+
+// GET /api/meetings/token/:roomName
+router.get('/token/:roomName', protect, async (req, res) => {
+    try {
+        const { roomName } = req.params;
+        const appId = process.env.JAAS_APP_ID;
+        const kid = process.env.JAAS_KID;
+        const privateKey = process.env.JAAS_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
+        if (!appId || !kid || !privateKey) {
+            return res.status(500).json({ message: 'JaaS configuration is missing on server' });
+        }
+
+        const token = generateJaaSJWT(roomName, req.user, appId, kid, privateKey);
+        res.json({ token, appId });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 // GET /api/meetings
 router.get('/', protect, async (req, res) => {
