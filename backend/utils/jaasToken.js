@@ -16,11 +16,11 @@ const generateJaaSJWT = (roomName, user, appId, kid, privateKey) => {
     nbf: Math.floor(now.getTime() / 1000) - 10,
     context: {
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        id: user?._id || 'guest-' + Math.random().toString(36).substring(7),
+        name: user?.name || 'Guest User',
+        email: user?.email || '',
         avatar: '',
-        moderator: 'true'
+        moderator: user?.role === 'admin' ? 'true' : 'false'
       },
       features: {
         livestreaming: 'true',

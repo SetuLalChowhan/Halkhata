@@ -90,11 +90,20 @@ const MeetingPage = () => {
           }}
           onApiReady={(externalApi) => {
             externalApi.addListener('videoConferenceLeft', () => {
-              setShowSummaryModal(true);
+              // Only show summary modal for admins
+              if (user?.role === 'admin') {
+                setShowSummaryModal(true);
+              } else {
+                navigate('/');
+              }
             });
           }}
           onReadyToClose={() => {
-            setShowSummaryModal(true);
+            if (user?.role === 'admin') {
+              setShowSummaryModal(true);
+            } else {
+              navigate('/');
+            }
           }}
           getIFrameRef={(iframeRef) => {
             iframeRef.style.height = '100%';
